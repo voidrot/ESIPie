@@ -2,7 +2,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class _UAConfig(BaseSettings):
+class UAConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ESIPIE_UA_",
         env_ignore_empty=True,
@@ -21,7 +21,7 @@ class _UAConfig(BaseSettings):
         frozen=True,
     )
 
-class _APIConfig(BaseSettings):
+class APIConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ESIPIE_",
         env_ignore_empty=True,
@@ -44,7 +44,7 @@ class _APIConfig(BaseSettings):
         description="The ESI compatibility date to use in requests.",
     )
 
-class _AuthConfig(BaseSettings):
+class AuthConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ESIPIE_",
         env_ignore_empty=True,
@@ -69,7 +69,7 @@ class _AuthConfig(BaseSettings):
         frozen=True,
     )
 
-class _CacheConfig(BaseSettings):
+class CacheConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ESIPIE_",
         env_ignore_empty=True,
@@ -98,9 +98,9 @@ class _CacheConfig(BaseSettings):
     )
 
 class Config(BaseSettings):
-    api = _APIConfig()
-    auth = _AuthConfig()
-    ua = _UAConfig()
-    cache = _CacheConfig()
+    api: APIConfig = Field(default_factory=APIConfig)
+    auth: AuthConfig = Field(default_factory=AuthConfig)
+    ua: UAConfig = Field(default_factory=UAConfig)
+    cache: CacheConfig = Field(default_factory=CacheConfig)
 
 
