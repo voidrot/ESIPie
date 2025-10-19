@@ -21,6 +21,7 @@ class UAConfig(BaseSettings):
         frozen=True,
     )
 
+
 class APIConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ESIPIE_",
@@ -43,6 +44,7 @@ class APIConfig(BaseSettings):
         default="2025-09-26",
         description="The ESI compatibility date to use in requests.",
     )
+
 
 class AuthConfig(BaseSettings):
     model_config = SettingsConfigDict(
@@ -68,6 +70,7 @@ class AuthConfig(BaseSettings):
         description="The EVE Online client tenant to use.",
         frozen=True,
     )
+
 
 class CacheConfig(BaseSettings):
     model_config = SettingsConfigDict(
@@ -97,10 +100,9 @@ class CacheConfig(BaseSettings):
         frozen=True,
     )
 
+
 class Config(BaseSettings):
     api: APIConfig = Field(default_factory=APIConfig)
     auth: AuthConfig = Field(default_factory=AuthConfig)
     ua: UAConfig = Field(default_factory=UAConfig)
     cache: CacheConfig = Field(default_factory=CacheConfig)
-
-

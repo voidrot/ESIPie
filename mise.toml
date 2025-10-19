@@ -5,3 +5,4 @@ uv = "latest"
 [env]
 PYTHONDONTWRITEBYTECODE = "1"
 _.path = [".venv/bin"]
+_.file = '.env'
