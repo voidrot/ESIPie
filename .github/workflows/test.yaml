@@ -44,4 +44,4 @@ jobs:
         uv sync --all-extras --all-groups
     - name: Run tests
       run: |
-        uv tool run pytest
+        uv run pytest -v

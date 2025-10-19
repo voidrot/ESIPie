@@ -12,7 +12,12 @@ maintainers = [
 requires-python = ">=3.10"
 license = { text = "AGPL-3.0-or-later" }
 dependencies = [
-
+    "aiopenapi3>=0.8.1",
+    "httpx[http2]>=0.28.1",
+    "pydantic>=2.12.3",
+    "pydantic-settings>=2.11.0",
+    "redis[hiredis]>=6.4.0",
+    "tenacity>=9.1.2",
 ]
 
 [project.optional-dependencies]
@@ -26,7 +31,7 @@ test = [
 
 [project.urls]
 Homepage = "https://github.com/voidrot/esipie"
-# Documentation = "https://esipie.readthedocs.io/"
+Documentation = "https://voidrot.github.io/esipie/"
 Issues = "https://github.com/voidrot/esipie/issues"
 
 [build-system]
