@@ -1,0 +1,55 @@
+[project]
+name = "esipie"
+version = "0.1.0"
+description = "Eve Online ESI Client with caching and rate limit handling."
+readme = "README.md"
+authors = [
+    { name = "Buck Brady", email = "bbrady145@gmail.com" }
+]
+maintainers = [
+    { name = "Buck Brady", email = "bbrady145@gmail.com" }
+]
+requires-python = ">=3.10"
+license = { text = "AGPL-3.0-or-later" }
+dependencies = [
+
+]
+
+[project.optional-dependencies]
+test = [
+    "coverage",  # testing
+    "pytest",  # testing
+    "ruff",  # linting
+    "ty", # checking types
+    "ipdb", # debugging
+]
+
+[project.urls]
+Homepage = "https://github.com/voidrot/esipie"
+# Documentation = "https://esipie.readthedocs.io/"
+Issues = "https://github.com/voidrot/esipie/issues"
+
+[build-system]
+requires = ["uv_build>=0.9.4,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.ty]
+# All rules are enabled as "error" by default; no need to specify unless overriding.
+# Example override: relax a rule for the entire project (uncomment if needed).
+# rules.TY015 = "warn"  # For invalid-argument-type, warn instead of error.
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
