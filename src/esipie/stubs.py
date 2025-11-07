@@ -1,0 +1,2 @@
+class EsiClientStub:
+    pass

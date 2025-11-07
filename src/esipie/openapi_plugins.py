@@ -2,9 +2,13 @@ import logging
 from collections.abc import Generator
 from typing import Any
 
-from aiopenapi3.plugin import Document
+from aiopenapi3.plugin import Document, Plugin
 
 logger = logging.getLogger(__name__)
+
+
+def _load_plugins(tags: list[str], operations: list[str]) -> list[Plugin]:
+    return [PatchCompatibilityDatePlugin(), Trim204ContentType(), Add304ContentType(), MinifySpec(tags, operations)]
 
 
 class Trim204ContentType(Document):
@@ -56,10 +60,7 @@ class MinifySpec(Document):
 
     def parsed(self, ctx: Document.Context) -> Document.Context:
         if len(self.keep_tags) == 0 and self.keep_ops == []:
-            logger.error("No tag/path filtering supplied to ESI Client. Using all tags.", stack_info=True)
-            # Throw error since we don't want unfiltered specs in production.
-            raise AttributeError("No tag/path filtering supplied to ESI Client.")
-            # We are in debug mode allow an unfiltered client.
+            logger.warning("No tag/path filtering supplied to ESI Client. Using all tags.", stack_info=False)
             return ctx
 
         # filter the client.
