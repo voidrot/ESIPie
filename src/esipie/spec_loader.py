@@ -1,7 +1,7 @@
 import warnings
 
 from aiopenapi3 import OpenAPI
-from httpx import AsyncClient, Client, Timeout
+from httpx import Client, Timeout
 
 from esipie.config import CONFIG
 from esipie.helpers import _build_user_agent
