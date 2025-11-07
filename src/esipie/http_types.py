@@ -1,0 +1,1 @@
+HTTPEsiErrorRateLimit = 420
