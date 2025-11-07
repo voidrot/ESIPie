@@ -1,4 +1,4 @@
-from tenacity import AsyncRetrying, Retrying, retry_if_exception, stop_after_attempt, wait_combine, wait_exponential
+from tenacity import Retrying, retry_if_exception, stop_after_attempt, wait_combine, wait_exponential
 
 from esipie.config import CONFIG
 from esipie.exceptions import EsiErrorLimitException
@@ -75,4 +75,3 @@ def http_retry_sync() -> Retrying:
         stop=stop_after_attempt(3),
         reraise=True,
     )
-

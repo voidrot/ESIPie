@@ -1,5 +1,4 @@
 from esipie.client import EsiClient
-from esipie.config import CONFIG
 from esipie.helpers import _build_user_agent
 from esipie.spec_loader import load_esi_spec_sync
 
