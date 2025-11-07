@@ -22,6 +22,12 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      ESIPIE_USER_AGENT_APP_NAME: esipie
+      ESIPIE_USER_AGENT_APP_VERSION: 0.1.0
+      ESIPIE_USER_AGENT_URL: http://example.com
+      ESIPIE_USER_AGENT_CONTACT_EMAIL: contact@example.com
+
     steps:
     - uses: actions/checkout@v4
     - name: Install the latest version of uv
