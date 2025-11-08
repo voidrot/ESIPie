@@ -22,7 +22,7 @@ class Config(BaseSettings):
     esi_base_url: str = "https://esi.evetech.net"
     esi_spec_url: str = "https://esi.evetech.net/meta/openapi.json"
     esi_spec_file_path: str | None = None
-    esi_compatibility_date: str = "2025-09-30"
+    esi_compatibility_date: str = "2025-11-06"
     esi_default_language: str = "en-us"
     esi_default_tenant: str = "tranquility"
 
@@ -35,4 +35,4 @@ class Config(BaseSettings):
     cache_client_async_key_prefix: str = "esipie:esi_client_async"
 
 
-CONFIG = Config() # type: ignore user is expected to set env vars
+CONFIG = Config()  # type: ignore user is expected to set env vars

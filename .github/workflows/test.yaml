@@ -22,6 +22,12 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      ESIPIE_USER_AGENT_APP_NAME: esipie
+      ESIPIE_USER_AGENT_APP_VERSION: 0.1.0
+      ESIPIE_USER_AGENT_URL: http://example.com
+      ESIPIE_USER_AGENT_CONTACT_EMAIL: contact@example.com
+
     steps:
     - uses: actions/checkout@v4
     - name: Install the latest version of uv
@@ -33,6 +39,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - uses: astral-sh/ruff-action@v3
+      with:
+        version: "latest"
     - name: Lint with ruff
       run: |
         # stop the build if there are Python syntax errors or undefined names
