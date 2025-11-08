@@ -35,4 +35,4 @@ class Config(BaseSettings):
     cache_client_async_key_prefix: str = "esipie:esi_client_async"
 
 
-CONFIG = Config() # type: ignore user is expected to set env vars
+CONFIG = Config()  # type: ignore user is expected to set env vars

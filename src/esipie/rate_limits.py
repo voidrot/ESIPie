@@ -1,144 +1,74 @@
-# Auto-generated rate limit dataclasses
-# Do not edit manually
-from dataclasses import dataclass
+import logging
+import time
+import random
+from limits import RateLimitItem, parse, storage, strategies
+from limits.strategies import SlidingWindowCounterRateLimiter
 
+from esipie.config import CONFIG
+from esipie.rate_limit_configs import GeneralRateLimit, RateLimitConfig
 
-@dataclass(frozen=True)
-class CharLocationRateLimit:
-    group_name: str = "char-location"
-    limit: int = 1200
-    window: str = "15m"
+logger = logging.getLogger(__name__)
 
+class RateLimitManager:
     def __init__(self):
-        raise TypeError("CharLocationRateLimit class cannot be instantiated")
+        self._rate_limiters: dict[str, RateLimitOperator] = {}
+        self.limit_storage = storage.RedisStorage(CONFIG.cache_redis_url)
+        self.limiter: SlidingWindowCounterRateLimiter = strategies.SlidingWindowCounterRateLimiter(self.limit_storage)
+
+    def _init_group_limit(self, group_name: str) -> None:
+        if group_name in self._rate_limiters:
+            logger.debug(f"Rate limiter for group '{group_name}' already initialized.")
+            return
+        try:
+            config_class = globals()[f"{''.join(word.capitalize() for word in group_name.split('-'))}RateLimit"]
+            config_instance: RateLimitConfig = config_class()
+        except KeyError:
+            logger.warning(
+                f"Rate limit configuration for group '{group_name}' not found. Defaulting to the GeneralRateLimit."
+            )
+            config_instance: RateLimitConfig = GeneralRateLimit()
+        rate_limit_item: RateLimitItem = parse(config_instance.window)
+        self._rate_limiters[group_name] = RateLimitOperator(self.limiter, rate_limit_item, group_name)
+
+    def get_rate_limiter(self, group_name: str) -> "RateLimitOperator":
+        if group_name not in self._rate_limiters:
+            self._init_group_limit(group_name)
+        return self._rate_limiters[group_name]
 
 
-@dataclass(frozen=True)
-class FittingRateLimit:
-    group_name: str = "fitting"
-    limit: int = 150
-    window: str = "15m"
+class RateLimitOperator:
+    status_2xx_cost = 2
+    status_3xx_cost = 1
+    status_4xx_cost = 5
+    status_5xx_cost = 0
 
-    def __init__(self):
-        raise TypeError("FittingRateLimit class cannot be instantiated")
+    def __init__(self, limiter: SlidingWindowCounterRateLimiter, rate_limit_item: RateLimitItem, namespace: str):
+        self.limiter = limiter
+        self.namespace = namespace
+        self.rate_limit = rate_limit_item
 
+    def consume_limit(self, status_code: int, user_id: str = "unauthenticated") -> None:
+        if 200 <= status_code < 300:
+            cost = self.status_2xx_cost
+        elif 300 <= status_code < 400:
+            cost = self.status_3xx_cost
+        elif 400 <= status_code < 500:
+            cost = self.status_4xx_cost
+        elif 500 <= status_code < 600:
+            cost = self.status_5xx_cost
+        else:
+            cost = 1  # Default cost for unexpected status codes
 
-@dataclass(frozen=True)
-class FleetRateLimit:
-    group_name: str = "fleet"
-    limit: int = 1800
-    window: str = "15m"
+        self.limiter.hit(self.rate_limit, self.namespace, user_id, cost=cost)
 
-    def __init__(self):
-        raise TypeError("FleetRateLimit class cannot be instantiated")
+    def check(self, user_id: str = "unauthenticated") -> bool:
+        return self.limiter.test(self.rate_limit, self.namespace, user_id)
 
-
-@dataclass(frozen=True)
-class FactionalWarfareRateLimit:
-    group_name: str = "factional-warfare"
-    limit: int = 150
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("FactionalWarfareRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class CharKillmailRateLimit:
-    group_name: str = "char-killmail"
-    limit: int = 30
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("CharKillmailRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class CharNotificationRateLimit:
-    group_name: str = "char-notification"
-    limit: int = 15
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("CharNotificationRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class CorpKillmailRateLimit:
-    group_name: str = "corp-killmail"
-    limit: int = 30
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("CorpKillmailRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class IncursionRateLimit:
-    group_name: str = "incursion"
-    limit: int = 150
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("IncursionRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class IndustryRateLimit:
-    group_name: str = "industry"
-    limit: int = 150
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("IndustryRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class InsuranceRateLimit:
-    group_name: str = "insurance"
-    limit: int = 150
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("InsuranceRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class KillmailRateLimit:
-    group_name: str = "killmail"
-    limit: int = 3600
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("KillmailRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class SovereigntyRateLimit:
-    group_name: str = "sovereignty"
-    limit: int = 600
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("SovereigntyRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class StatusRateLimit:
-    group_name: str = "status"
-    limit: int = 600
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("StatusRateLimit class cannot be instantiated")
-
-
-@dataclass(frozen=True)
-class UiRateLimit:
-    group_name: str = "ui"
-    limit: int = 900
-    window: str = "15m"
-
-    def __init__(self):
-        raise TypeError("UiRateLimit class cannot be instantiated")
+    def get_rate_limit_status(self, user_id: str = "unauthenticated"):
+        window = self.limiter.get_window_stats(self.rate_limit, self.namespace, user_id)
+        return {
+            "limit": self.rate_limit.amount,
+            "remaining": window.remaining,
+            "reset_time": window.reset_time,
+        }
 
